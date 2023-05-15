@@ -23,9 +23,18 @@ app.listen(PORT, () => {
 
 app.get("/urls/:id", (req, res) => {
   const templateVars = {
-    urls: urlDatabase,
     id: req.params.id,
-    longURL: urlDatabase[req.params.id].longURL
+    longURL: urlDatabase[req.params.id]
   };
-  res.render("urls_index", templateVars);
+  res.render("urls_show", templateVars);
+});
+
+app.get("/urls/:id", (req, res) => {
+  const id = req.params.id;
+  const longURL = urlDatabase[id];
+  if (longURL) {
+    res.redirect(longURL);
+  } else {
+    res.status(404).send("URL not found");
+  }
 });
