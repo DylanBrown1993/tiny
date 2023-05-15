@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/DylanBrown1993/tiny/issues"
   },
-  "homepage": "https://github.com/DylanBrown1993/tiny#readme"
+  "homepage": "https://github.com/DylanBrown1993/tiny#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
 }
