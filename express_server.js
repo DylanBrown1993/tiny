@@ -2,11 +2,6 @@ const express = require("express");
 const app = express();
 const PORT = 8080;
 
-app.get("/urls", (req, res) => {
-  const templateVars = { urls: urlDatabase };
-  res.render("urls_index", templateVars)
-});
-
 app.set("view engine", "ejs");
 
 const urlDatabase = {
@@ -24,4 +19,13 @@ app.get("/", (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
+});
+
+app.get("/urls/:id", (req, res) => {
+  const templateVars = {
+    urls: urlDatabase,
+    id: req.params.id,
+    longURL: urlDatabase[req.params.id].longURL
+  };
+  res.render("urls_index", templateVars);
 });
