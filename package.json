@@ -7,23 +7,5 @@
   "start": "./node_modules/.bin/nodemon -L express_server.js",
   "test": "echo \"Error: no test specified\" && exit 1"
 }
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/DylanBrown1993/tiny.git"
-  },
-  "keywords": [],
-  "author": "Dylan Brown - dylan.ian.brown@gmail.com",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/DylanBrown1993/tiny/issues"
-  },
-  "homepage": "https://github.com/DylanBrown1993/tiny#readme",
-  "dependencies": {
-    "ejs": "^3.1.9",
-    "express": "^4.18.2"
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.22"
   }
-}
+

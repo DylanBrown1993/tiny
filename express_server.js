@@ -19,6 +19,13 @@ app.get("/", (req, res) => {
   res.send("Hello!");
 });
 
+app.get("/urls", (req, res) => {
+  const templateVars = {
+    urls: urlDatabase
+  };
+  res.render("urls_index", templateVars);
+});
+
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
@@ -53,6 +60,16 @@ function generateRandomString() {
   }
   return randomString;
 }
+
+app.post('/urls/:id/delete', (req, res) => {
+  const id = req.params.id;
+  if (urlDatabase.hasOwnProperty(id)) {
+    delete urlDatabase[id];
+    res.redirect('/urls');
+  } else {
+    res.status(404).send('URL not found.');
+  }
+});
 
 app.get("/u/:id", (req, res) => {
   const shortURL = req.params.id;
