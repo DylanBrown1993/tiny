@@ -42,6 +42,19 @@ app.get("/urls/:id", (req, res) => {
   res.render("urls_show", templateVars);
 });
 
+app.post('/urls/:id', (req, res) => {
+  const id = req.params.id;
+  const newLongURL = req.body.longURL;
+
+  if (urlDatabase.hasOwnProperty(id)) {
+    urlDatabase[id] = newLongURL;
+    res.redirect('/urls');
+  } else {
+    res.status(404).send('URL not found.');
+  }
+});
+
+
 app.post("/urls", (req, res) => {
   const longURL = req.body.longURL;
   const shortURL = generateRandomString();
@@ -79,4 +92,11 @@ app.get("/u/:id", (req, res) => {
   } else {
     res.status(404).send("URL not found");
   }
+});
+
+app.post('/urls/:id', (req, res) => {
+  const id = req.params.id;
+  const newLongURL = req.body.longURL;
+  urls[id] = newLongURL;
+  res.redirect('/urls');
 });

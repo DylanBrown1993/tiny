@@ -23,7 +23,8 @@
           <tr>
             <th scope="col">Short URL ID</th>
             <th scope="col">Long URL</th>
-            <th scope="col">Actions</th> 
+            <th scope="col">Edit</th>
+            <th scope="col">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -31,6 +32,11 @@
             <tr>
               <td><%= id %></td>
               <td><%= urls[id] %></td>
+              <td>
+                <a href="/urls/<%= id %>" class="btn btn-primary btn-sm">
+                  <i class="bi bi-pencil"></i> Edit
+                </a>
+              </td>
               <td>
                 <form method="POST" action="/urls/<%= id %>/delete">
                   <button class="btn btn-danger btn-sm">Delete</button>
@@ -59,3 +65,5 @@
     ></script>
   </body>
 </html>
+
+
