@@ -108,6 +108,29 @@ app.get("/u/:id", (req, res) => {
   }
 });
 
+app.get('/login', (req, res) => {
+  res.render('login');
+});
+
+app.post('/login', (req, res) => {
+  const { email, password } = req.body
+  if (!email || !password) {
+    res.status(400).send("Email and password cannot be empty.")
+    return;
+  }
+  const user = getUserByEmail(email);
+  if (!user) {
+    res.status(400).send("Email has not been registered.")
+    return;
+  }
+  if (password !== user.password) {
+    res.status(400).send("Incorrect password.")
+    return;
+  }
+  res.cookie("userid", user.id)
+  res.redirect("/urls");
+});
+
 app.get("/register", (req, res) => {
   res.render("register");
 });
