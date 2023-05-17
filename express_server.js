@@ -49,9 +49,12 @@ app.get("/urls", (req, res) => {
   const templateVars = {
     urls: urlDatabase,
     user: users[req.cookies.userid],
+    loggedIn: req.cookies.userid !== undefined, 
   };
   res.render("urls_index", templateVars);
 });
+
+
 
 app.get("/urls/new", (req, res) => {
   const templateVars = {
@@ -113,23 +116,30 @@ app.get('/login', (req, res) => {
 });
 
 app.post('/login', (req, res) => {
-  const { email, password } = req.body
+  const { email, password } = req.body;
   if (!email || !password) {
-    res.status(400).send("Email and password cannot be empty.")
+    res.status(400).send("Email and password cannot be empty.");
     return;
   }
   const user = getUserByEmail(email);
   if (!user) {
-    res.status(400).send("Email has not been registered.")
+    res.status(403).send("Invalid email or password.");
     return;
   }
   if (password !== user.password) {
-    res.status(400).send("Incorrect password.")
+    res.status(403).send("Invalid email or password.");
     return;
   }
-  res.cookie("userid", user.id)
+  res.cookie("user_id", user.id);
   res.redirect("/urls");
 });
+
+app.post('/logout', (req, res) => {
+  res.clearCookie("user_id");
+  res.redirect("/login");
+});
+
+
 
 app.get("/register", (req, res) => {
   res.render("register");
