@@ -16,6 +16,8 @@
     <title>TinyApp</title>
   </head>
   <body>
+    <%- include('partials/_header', { loggedIn: user }) %>
+
     <main style="margin: 1em;">
       <h3>My URLs</h3>
       <table class="table">
@@ -31,7 +33,7 @@
           <% for (let id in urls) { %>
             <tr>
               <td><%= id %></td>
-              <td><%= urls[id] %></td>
+              <td><%= urls[id].longURL %></td> <!-- Modified line -->
               <td>
                 <a href="/urls/<%= id %>" class="btn btn-primary btn-sm">
                   <i class="bi bi-pencil"></i> Edit
@@ -47,6 +49,7 @@
         </tbody>
       </table>
     </main>
+
     <!-- Bootstrap JS -->
     <script
       src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
@@ -65,5 +68,4 @@
     ></script>
   </body>
 </html>
-
 
