@@ -1,6 +1,15 @@
 <header>
   <nav class="navbar navbar-expand-md navbar-dark bg-success">
     <a class="navbar-brand" href="/urls">TinyApp</a>
+    <div class="navbar-nav">
+      <% if (!loggedIn) { %>
+        <a class="nav-item nav-link" href="/register">Register</a>
+        <a class="nav-item nav-link" href="/login">Login</a>
+      <% } else { %>
+        <a class="nav-item nav-link" href="/urls">My URLs</a>
+        <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
+      <% } %>
+    </div>
     <button
       class="navbar-toggler"
       type="button"
@@ -12,18 +21,15 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-      <div class="navbar-nav">
-        <% if (!loggedIn) { %>
-          <a class="nav-item nav-link" href="/register">Register</a>
-          <a class="nav-item nav-link" href="/login">Login</a>
-        <% } else { %>
+      <div class="navbar-nav ml-auto">
+        <% if (loggedIn) { %>
+          <span class="nav-item nav-link">Welcome, <%= user.email %></span>
           <form class="nav-item" action="/logout" method="POST">
-            <button type="submit" class="nav-link btn btn-link">Logout</button>
+            <button type="submit" class="btn btn-danger">Logout</button>
           </form>
         <% } %>
-        <a class="nav-item nav-link" href="/urls">My URLs</a>
-        <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
       </div>
     </div>
   </nav>
 </header>
+

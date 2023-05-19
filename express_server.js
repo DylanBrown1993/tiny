@@ -15,6 +15,16 @@ app.use(
   })
 );
 
+// Middleware function to check if the user is authenticated
+const requireLogin = (req, res, next) => {
+  const userId = req.session.user_id;
+  if (!userId) {
+    res.redirect("/login"); // Redirect to the login page if not logged in
+  } else {
+    next(); // Proceed to the next middleware if logged in
+  }
+};
+
 const urlDatabase = {
   b6UTxQ: {
     longURL: "https://www.tsn.ca",
@@ -39,30 +49,48 @@ const users = {
   },
 };
 
-app.get("/urls.json", (req, res) => {
-  res.json(urlDatabase);
-});
+// ----------------------- GET Routes -----------------------
 
+// Home page
 app.get("/", (req, res) => {
   res.send("Hello!");
 });
 
-app.get("/urls", (req, res) => {
+// JSON representation of the URL database
+app.get("/urls.json", (req, res) => {
+  res.json(urlDatabase);
+});
+
+// List of URLs created by the logged-in user
+app.get("/urls", requireLogin, (req, res) => {
+  const userId = req.session.user_id;
+  const userUrls = urlsForUser(userId, urlDatabase);
+
   const templateVars = {
-    urls: urlsForUser(req.session.user_id),
-    user: users[req.session.user_id],
-    loggedIn: req.session.user_id !== undefined,
+    urls: userUrls,
+    user: users[userId],
+    loggedIn: !!userId,
   };
   res.render("urls_index", templateVars);
 });
 
+// Create a new URL
 app.get("/urls/new", (req, res) => {
+  const userId = req.session.user_id;
+
+  if (!userId) {
+    res.redirect("/login");
+    return;
+  }
+
   const templateVars = {
-    user: users[req.session.user_id],
+    user: users[userId],
   };
+
   res.render("urls_new", templateVars);
 });
 
+// Show details of a specific URL
 app.get("/urls/:id", (req, res) => {
   const shortURL = req.params.id;
   const url = urlDatabase[shortURL];
@@ -80,6 +108,32 @@ app.get("/urls/:id", (req, res) => {
   res.render("urls_show", templateVars);
 });
 
+// Redirect to the long URL associated with a short URL
+app.get("/u/:id", (req, res) => {
+  const shortURL = req.params.id;
+  const longURL = urlDatabase[shortURL].longURL;
+  res.redirect(longURL);
+});
+
+// Registration page
+app.get("/register", (req, res) => {
+  const templateVars = {
+    user: users[req.session.user_id],
+  };
+  res.render("register", templateVars);
+});
+
+// Login page
+app.get("/login", (req, res) => {
+  const templateVars = {
+    user: users[req.session.user_id],
+  };
+  res.render("login", templateVars);
+});
+
+// ----------------------- POST Routes -----------------------
+
+// Update the long URL of a specific short URL
 app.post("/urls/:id", (req, res) => {
   const shortURL = req.params.id;
   const newLongURL = req.body.longURL;
@@ -99,6 +153,7 @@ app.post("/urls/:id", (req, res) => {
   res.redirect("/urls");
 });
 
+// Create a new URL
 app.post("/urls", (req, res) => {
   const longURL = req.body.longURL;
   const shortURL = generateRandomString();
@@ -116,6 +171,7 @@ app.post("/urls", (req, res) => {
   res.redirect(`/urls/${shortURL}`);
 });
 
+// Delete a specific short URL
 app.post("/urls/:id/delete", (req, res) => {
   const shortURL = req.params.id;
   const userId = req.session.user_id;
@@ -134,19 +190,7 @@ app.post("/urls/:id/delete", (req, res) => {
   res.redirect("/urls");
 });
 
-app.get("/u/:id", (req, res) => {
-  const shortURL = req.params.id;
-  const longURL = urlDatabase[shortURL].longURL;
-  res.redirect(longURL);
-});
-
-app.get("/register", (req, res) => {
-  const templateVars = {
-    user: users[req.session.user_id],
-  };
-  res.render("register", templateVars);
-});
-
+// User registration
 app.post("/register", (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
@@ -173,13 +217,7 @@ app.post("/register", (req, res) => {
   res.redirect("/urls");
 });
 
-app.get("/login", (req, res) => {
-  const templateVars = {
-    user: users[req.session.user_id],
-  };
-  res.render("login", templateVars);
-});
-
+// User login
 app.post("/login", (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
@@ -194,6 +232,7 @@ app.post("/login", (req, res) => {
   res.redirect("/urls");
 });
 
+// User logout
 app.post("/logout", (req, res) => {
   req.session = null;
   res.redirect("/urls");
